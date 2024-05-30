@@ -188,6 +188,7 @@ def dashboard():
                     batch_size = int(batch_size)
                 except:
                     batch_size = 5
+                print("process started")
                 name_sheet = f"static/uploads/{random.randint(1111111,9999999)}_output.csv"
 
                 asyncio.run(scrape_google_maps_data(google_url, batch_size, name_sheet))
