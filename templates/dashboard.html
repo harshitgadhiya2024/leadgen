@@ -11,17 +11,19 @@
 
 <body>
     <div class="row">
-        <div class="col-4"></div>
-        <div class="col-4">
-            <form style="margin-top: 150px; border: 1px solid #000; padding: 50px; box-shadow: 1px 2px 2px #777;" action="/dashboard" method="post" enctype="multipart/form-data">
-                <center><h1>Dahboard</h1></center><br>
+        <div class="col-3"></div>
+        <div class="col-6">
+            <form style="margin-top: 100px; border: 1px solid #000; padding: 50px; box-shadow: 1px 2px 2px #777;"
+                action="/dashboard" method="post" enctype="multipart/form-data">
+                <center>
+                    <h1>Dahboard</h1>
+                </center><br>
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="col-md-auto" id="remove_tag" style="margin: 10px">
                             {% with messages = get_flashed_messages(with_categories=true)
                             %} {% if messages %} {% for category, message in messages %}
-                            <div class="alert alert-{{category}} alert-dismissable" role="alert"
-                                id="inside_alert">
+                            <div class="alert alert-{{category}} alert-dismissable" role="alert" id="inside_alert">
                                 {{message}}
                             </div>
                             {% endfor %} {% endif %} {% endwith %}
@@ -29,20 +31,71 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="url" class="form-label"><b>Google Url</b></label>
-                    <input type="text" class="form-control" id="url" name="url"
-                        placeholder="Enter your Google Map Url">
+                    <label for="url" class="form-label"><b>Google Url</b><span id="checkstatus" style="font-weight: 700; padding-left: 10px;"></span></label>
+                    <input type="text" class="form-control" id="url" name="url" placeholder="Enter your Google Map Url"
+                        oninput="checkurl(this)">
+                    <p style="color: red; font-size: 14px; padding-top: 6px;">Format:
+                        https://www.google.com/maps/search/restaurants+in+hamburg/</p>
+                </div>
+                <p style="font-weight: 600;">OR</p>
+                <div class="mb-3">
+                    <label for="keyword" class="form-label"><b>Keyword</b></label>
+                    <input type="text" class="form-control" id="keyword" name="keyword" oninput="checkkeyword(this)"
+                        placeholder="Enter your Keyword">
+                    <p style="color: green" id="urldata"></p>
                 </div>
                 <div class="mb-3">
-                    <label for="batch" class="form-label"><b>Batch Size</b></label>
+                    <label for="batch" class="form-label"><b>Batch Size <span style="color: red;">*</span></b></label>
                     <input type="number" class="form-control" id="batch" name="batch"
-                        placeholder="Enter suitable Batch Size">
+                        placeholder="Enter suitable Batch Size" required>
                 </div><br>
                 <button type="submit" class="btn btn-primary w-100">Submit</button>
             </form>
         </div>
-        <div class="col-4"></div>
+        <div class="col-3"></div>
     </div>
+
+    <script>
+
+        function isValidSearchURL(url) {
+            // Define the regex pattern to match the format /search/<any word>
+            const pattern = /\/search\/[^/]+/;
+
+            // Create a URL object to parse the given URL
+            try {
+                const parsedUrl = new URL(url);
+
+                // Extract the pathname from the parsed URL
+                const pathname = parsedUrl.pathname;
+
+                // Test if the pathname matches the pattern
+                return pattern.test(pathname);
+            } catch (e) {
+                // If an error occurs (e.g., invalid URL), return false
+                return false;
+            }
+        }
+
+        function checkurl(urltag) {
+            const urlformat = urltag.value;
+            if (isValidSearchURL(urlformat)) {
+                var checkstatus = document.getElementById("checkstatus");
+                checkstatus.innerText = "Validate";
+                checkstatus.style.color = "green";
+            } else {
+                var checkstatus = document.getElementById("checkstatus");
+                checkstatus.innerText = "Not Validate";
+                checkstatus.style.color = "red";                
+            }
+            console.log(isValidSearchURL(urlformat));
+        }
+
+        function checkkeyword(urltext) {
+            const urlformat = urltext.value;
+            var checkstatus1 = document.getElementById("urldata");
+            checkstatus1.innerText = `https://www.google.com/maps/search/${urlformat}/`;
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

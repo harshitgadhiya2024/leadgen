@@ -175,17 +175,24 @@ def login():
 def dashboard():
     try:
         if request.method=="POST":
-            google_url = request.form["url"]
-            batch_size = request.form["batch"]
-            try:
-                batch_size = int(batch_size)
-            except:
-                batch_size = 5
-            name_sheet = f"static/uploads/{random.randint(1111111,9999999)}_output.csv"
+            google_url = request.form.get("url", "")
+            keyword = request.form.get("keyword", "")
+            if google_url and keyword:
+                flash("At least 1 input google url needed", "danger")
+            else:
+                if keyword:
+                    google_url = f"https://www.google.com/maps/search/{keyword}/"
+                
+                batch_size = request.form["batch"]
+                try:
+                    batch_size = int(batch_size)
+                except:
+                    batch_size = 5
+                name_sheet = f"static/uploads/{random.randint(1111111,9999999)}_output.csv"
 
-            asyncio.run(scrape_google_maps_data(google_url, batch_size, name_sheet))
-            file = os.path.abspath(name_sheet)
-            return send_file(file, as_attachment=True)
+                asyncio.run(scrape_google_maps_data(google_url, batch_size, name_sheet))
+                file = os.path.abspath(name_sheet)
+                return send_file(file, as_attachment=True)
         else:
             return render_template("dashboard.html")
 
@@ -195,4 +202,4 @@ def dashboard():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=8000, debug=True)

@@ -123,11 +123,11 @@ name_sheet = f"{random.randint(1111111,9999999)}_output.csv"
 
 async def scrape_google_maps_data(google_url, batch_size, name_sheet):
     # name_sheet = "hamburg.csv"
-    # google_url = "https://www.google.com/maps/search/restaurants+in+hamburg/@53.5518777,9.9229594,13z/data=!3m1!4b1?entry=ttu"
+    # google_url = "https://www.google.com/maps/search/restaurants+in+hamburg/"
     
     print("Execution Time:")
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
+        browser = await p.chromium.launch(headless=False)
         page = await browser.new_page()
         await page.goto(google_url)
 
